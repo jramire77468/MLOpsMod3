@@ -7,12 +7,14 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
 import joblib
 # Se quita 'from pathlib import Path'
+import pandas as pd
+from mlflow.models.signature import infer_signature
 
 print("🚀 Iniciando entrenamiento...")
 
-# Configurar MLflow para usar la ruta de tracking relativa
-# No usamos os.makedirs, dejando que MLflow maneje la creación de carpetas
-mlruns_dir = "./mlruns" 
+# Configurar MLflow para usar una ruta relativa simple, compatible con CI/CD (Linux)
+mlruns_dir = "./mlruns"
+# Quitamos os.makedirs aquí, dejando que MLflow lo haga
 mlflow.set_tracking_uri(mlruns_dir)
 
 print(f"📂 Directorio de trabajo: {os.getcwd()}")
@@ -21,11 +23,9 @@ print(f"📊 MLflow tracking URI: {mlruns_dir}")
 # Crear o usar experimento
 experiment_name = "CI-CD-Lab2"
 try:
-    # Intenta crear el experimento
     experiment_id = mlflow.create_experiment(experiment_name)
     print(f"✨ Experimento creado: {experiment_name}")
 except:
-    # Si el experimento existe, obtén su ID
     experiment = mlflow.get_experiment_by_name(experiment_name)
     experiment_id = experiment.experiment_id
     print(f"📌 Usando experimento existente: {experiment_name}")
@@ -45,25 +45,31 @@ preds = model.predict(X_test)
 mse = mean_squared_error(y_test, preds)
 print(f"📊 MSE: {mse:.4f}")
 
+# Obtener la firma del modelo
+signature = infer_signature(X_train, y_train)
+
 # Guardar con MLflow
 with mlflow.start_run(experiment_id=experiment_id) as run:
-    # Loguear
     mlflow.log_param("model_type", "LinearRegression")
     mlflow.log_param("test_size", 0.2)
     mlflow.log_metric("mse", mse)
-    
-    # Guardar modelo en MLflow 
-    # Aquí es donde fallaba, MLflow debe resolver la ruta absoluta por sí solo
-    mlflow.sklearn.log_model(model, "model")
-    
+
+    # Guardar modelo en MLflow con signature e input_example
+    mlflow.sklearn.log_model(
+        model,
+        "model",
+        signature=signature,
+        input_example=X_train[:5] # Usar las primeras 5 filas como ejemplo de entrada
+    )
+
     run_id = run.info.run_id
     print(f"✅ Run ID: {run_id}")
-    
-    # Guardar run_id
+
+    # Guardar run_id para validación
     with open("run_id.txt", "w") as f:
         f.write(run_id)
 
-# Guardar con joblib (para validación)
+# TAMBIÉN guardar con joblib para compatibilidad
 joblib.dump(model, "model.pkl")
 print("💾 Modelo guardado como model.pkl")
 print("✅ Entrenamiento completado exitosamente")

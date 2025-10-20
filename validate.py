@@ -7,7 +7,7 @@ from sklearn.metrics import mean_squared_error
 
 print("🔍 Iniciando validación...")
 
-# Cargar modelo desde joblib (más simple en Windows)
+# Cargar modelo desde joblib
 print("📥 Cargando modelo...")
 try:
     model = joblib.load("model.pkl")
