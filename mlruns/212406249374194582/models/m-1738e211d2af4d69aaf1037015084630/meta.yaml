@@ -1,0 +1,10 @@
+artifact_location: file:///C:/Users/Juan/Downloads/mlflow-deploy/mlruns/212406249374194582/models/m-1738e211d2af4d69aaf1037015084630/artifacts
+creation_timestamp: 1760923778557
+experiment_id: '212406249374194582'
+last_updated_timestamp: 1760923798268
+model_id: m-1738e211d2af4d69aaf1037015084630
+model_type: null
+name: model
+source_run_id: 22f106b41c6243b092ae3b52b14a8f6b
+status: 2
+status_message: null

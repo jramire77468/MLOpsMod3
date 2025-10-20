@@ -1,0 +1,14 @@
+artifact_uri: file:///C:/Users/Juan/Downloads/mlflow-deploy/mlruns/212406249374194582/22f106b41c6243b092ae3b52b14a8f6b/artifacts
+end_time: 1760923798354
+entry_point_name: ''
+experiment_id: '212406249374194582'
+lifecycle_stage: active
+run_id: 22f106b41c6243b092ae3b52b14a8f6b
+run_name: placid-dolphin-196
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1760923778293
+status: 3
+tags: []
+user_id: Juan
